@@ -1,0 +1,28 @@
+<%- include('header', { title: 'Dashboard' }) %>
+
+<div class="page-header">
+  <h2>Welcome back, <strong>@<%= user.username %></strong></h2>
+  <span class="badge badge-<%= user.role %>"><%= user.role %></span>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number"><%= total %></div>
+    <div class="stat-label">Total Profiles</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number"><%= user.role === 'admin' ? 'Full' : 'Read' %></div>
+    <div class="stat-label">Access Level</div>
+  </div>
+</div>
+
+<div class="quick-actions">
+  <h3>Quick Actions</h3>
+  <div class="action-links">
+    <a href="/profiles" class="btn btn-primary">Browse Profiles</a>
+    <a href="/search" class="btn btn-secondary">Natural Language Search</a>
+    <a href="/profiles?format=csv" class="btn btn-secondary">Export CSV</a>
+  </div>
+</div>
+
+<%- include('footer') %>

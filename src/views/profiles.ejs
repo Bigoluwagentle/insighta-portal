@@ -1,0 +1,56 @@
+<%- include('header', { title: 'Profiles' }) %>
+
+<div class="page-header">
+  <h2>Profiles <span class="count">(<%= total %> total)</span></h2>
+  <a href="/api/profiles/export?format=csv" class="btn btn-secondary" target="_blank">Export CSV</a>
+</div>
+
+<form class="filter-form" method="GET" action="/profiles">
+  <input type="text" name="gender" placeholder="Gender (male/female)" value="<%= query.gender || '' %>" />
+  <input type="text" name="country_id" placeholder="Country ID (e.g. NG)" value="<%= query.country_id || '' %>" />
+  <input type="text" name="age_group" placeholder="Age group" value="<%= query.age_group || '' %>" />
+  <select name="sort_by">
+    <option value="">Sort by</option>
+    <option value="age" <%= query.sort_by === 'age' ? 'selected' : '' %>>Age</option>
+    <option value="created_at" <%= query.sort_by === 'created_at' ? 'selected' : '' %>>Created at</option>
+    <option value="gender_probability" <%= query.sort_by === 'gender_probability' ? 'selected' : '' %>>Gender probability</option>
+  </select>
+  <select name="order">
+    <option value="asc" <%= query.order === 'asc' ? 'selected' : '' %>>Ascending</option>
+    <option value="desc" <%= query.order === 'desc' ? 'selected' : '' %>>Descending</option>
+  </select>
+  <button type="submit" class="btn btn-primary">Filter</button>
+  <a href="/profiles" class="btn btn-secondary">Reset</a>
+</form>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Name</th><th>Gender</th><th>Age</th><th>Age Group</th><th>Country</th><th>Probability</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% data.forEach(p => { %>
+    <tr onclick="window.location='/profiles/<%= p.id %>'" style="cursor:pointer">
+      <td><%= p.name %></td>
+      <td><%= p.gender %></td>
+      <td><%= p.age %></td>
+      <td><span class="badge badge-<%= p.age_group %>"><%= p.age_group %></span></td>
+      <td><%= p.country_name || p.country_id %></td>
+      <td><%= (p.gender_probability * 100).toFixed(0) %>%</td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <% if (links.prev) { %>
+    <a href="/profiles?<%= new URLSearchParams({...query, page: page - 1}) %>" class="btn btn-secondary">← Prev</a>
+  <% } %>
+  <span>Page <%= page %> of <%= total_pages %></span>
+  <% if (links.next) { %>
+    <a href="/profiles?<%= new URLSearchParams({...query, page: page + 1}) %>" class="btn btn-secondary">Next →</a>
+  <% } %>
+</div>
+
+<%- include('footer') %>

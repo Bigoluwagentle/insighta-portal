@@ -1,0 +1,46 @@
+<%- include('header', { title: 'Search' }) %>
+
+<div class="page-header">
+  <h2>Natural Language Search</h2>
+</div>
+
+<form class="search-form" method="GET" action="/search">
+  <input type="text" name="q" placeholder='Try: "young males from nigeria" or "female seniors"'
+         value="<%= query %>" class="search-input" autofocus />
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<% if (results) { %>
+  <% if (results.status === 'error') { %>
+    <div class="alert alert-error"><%= results.message %></div>
+  <% } else { %>
+    <p class="result-count"><%= results.total %> result<%= results.total !== 1 ? 's' : '' %> found</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Name</th><th>Gender</th><th>Age</th><th>Age Group</th><th>Country</th></tr>
+      </thead>
+      <tbody>
+        <% results.data.forEach(p => { %>
+        <tr onclick="window.location='/profiles/<%= p.id %>'" style="cursor:pointer">
+          <td><%= p.name %></td>
+          <td><%= p.gender %></td>
+          <td><%= p.age %></td>
+          <td><span class="badge badge-<%= p.age_group %>"><%= p.age_group %></span></td>
+          <td><%= p.country_name || p.country_id %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <% if (results.links && results.links.prev) { %>
+        <a href="/search?q=<%= encodeURIComponent(query) %>&page=<%= results.page - 1 %>" class="btn btn-secondary">← Prev</a>
+      <% } %>
+      <span>Page <%= results.page %> of <%= results.total_pages %></span>
+      <% if (results.links && results.links.next) { %>
+        <a href="/search?q=<%= encodeURIComponent(query) %>&page=<%= results.page + 1 %>" class="btn btn-secondary">Next →</a>
+      <% } %>
+    </div>
+  <% } %>
+<% } %>
+
+<%- include('footer') %>

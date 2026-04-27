@@ -38,3 +38,5 @@ PORT=3001
 NODE_ENV=production
 API_BASE_URL=""
 ```
+
+<!-- Stage 3 complete -->
